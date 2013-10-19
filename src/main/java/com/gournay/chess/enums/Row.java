@@ -25,7 +25,7 @@ public enum Row {
 		return index;
 	}
 
-	static private Row fromIndex(int indexWanted) {
+	public static Row fromIndex(int indexWanted) {
 		for (Row row : values()) {
 			if (row.getIndex() == indexWanted) {
 				return row;

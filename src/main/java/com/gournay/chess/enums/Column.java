@@ -25,7 +25,7 @@ public enum Column {
 		return index;
 	}
 
-	static private Column fromIndex(int indexWanted) {
+	public static Column fromIndex(int indexWanted) {
 		for (Column column : values()) {
 			if (column.getIndex() == indexWanted) {
 				return column;

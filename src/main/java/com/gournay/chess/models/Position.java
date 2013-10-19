@@ -16,12 +16,28 @@ public class Position {
 		row = r;
 	}
 
+	public Position(int colIndex, int rowIndex) {
+		this(Column.fromIndex(colIndex), Row.fromIndex(rowIndex));
+	}
+
 	public Column getCol() {
 		return col;
 	}
 
 	public Row getRow() {
 		return row;
+	}
+
+	@Override
+	public boolean equals(Object p) {
+		return (p instanceof Position)
+				&& col.equals(((Position) p).getCol())
+				&& row.equals(((Position) p).getRow());
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Position(col:%s, row:%s)", col, row);
 	}
 
 	public Position addRows(int rowCount, boolean isWhite) {
