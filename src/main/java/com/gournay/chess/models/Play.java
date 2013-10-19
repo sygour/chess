@@ -16,7 +16,7 @@ import com.gournay.chess.enums.Row;
 public class Play {
 
 	private boolean whitePlayer;
-	private Map<Position, Piece> board;
+	final private Map<Position, Piece> board;
 
 	public Play() {
 		whitePlayer = true;
@@ -35,10 +35,6 @@ public class Play {
 
 	public boolean isWhitePlayer() {
 		return whitePlayer;
-	}
-
-	public void setWhitePlayer(boolean whitePlayer) {
-		this.whitePlayer = whitePlayer;
 	}
 
 	public Map<Position, Piece> getBoard() {
@@ -149,5 +145,16 @@ public class Play {
 			}
 		} while (checkedPosition != null && !blocked);
 		return moves;
+	}
+
+	public void move(Position from, Position to) throws IllegalArgumentException {
+		if (!getAvailableMoves(from).contains(to)) {
+			throw new IllegalArgumentException("Illegal move, the selected move is not possible");
+		} else {
+			final Piece piece = board.get(from);
+			board.put(to, piece);
+			board.remove(from);
+			whitePlayer = !whitePlayer;
+		}
 	}
 }
