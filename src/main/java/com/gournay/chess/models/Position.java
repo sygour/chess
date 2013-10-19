@@ -36,6 +36,12 @@ public class Position {
 	}
 
 	@Override
+	// necessary because used in a hashMap
+	public int hashCode() {
+		return 100*col.getIndex() + row.getIndex();
+	}
+
+	@Override
 	public String toString() {
 		return String.format("Position(col:%s, row:%s)", col, row);
 	}
