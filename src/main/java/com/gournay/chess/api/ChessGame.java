@@ -2,7 +2,6 @@ package com.gournay.chess.api;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.gournay.chess.enums.Piece;
 import com.gournay.chess.models.Play;
 import com.gournay.chess.models.Position;
@@ -13,15 +12,15 @@ import com.gournay.chess.models.Position;
  */
 public class ChessGame {
 
-	private Play play;
+	final private Play play = new Play();
 
 	public void move(Position from, Position to) throws IllegalArgumentException {
 		Piece movingPiece = play.getBoard().get(from);
 		checkPieceState(movingPiece);
-		play.setWhitePlayer(!play.isWhitePlayer());
+		play.move(from, to);
 	}
 
-	public List<Position> checkAvailablePositions(Position piecePosition) throws IllegalArgumentException {
+	public List<Position> getAvailableMoves(Position piecePosition) throws IllegalArgumentException {
 		Piece pieceToCheck = play.getBoard().get(piecePosition);
 		checkPieceState(pieceToCheck);
 		return play.getAvailableMoves(piecePosition);
@@ -33,7 +32,7 @@ public class ChessGame {
 		}
 		else if (play.isWhitePlayer() != movingPiece.isWhite()) {
 			throw new IllegalArgumentException(
-					String.format("Trying to move a %s piece", play.isWhitePlayer() ? "white" : "black"));
+					String.format("%s player trying to move a wrong piece", play.isWhitePlayer() ? "White" : "Black"));
 		}
 	}
 }
