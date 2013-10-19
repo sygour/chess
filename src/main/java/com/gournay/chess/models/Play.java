@@ -49,12 +49,13 @@ public class Play {
 		List<Position> moves = Lists.newArrayList();
 		Piece piece = getBoard().get(from);
 
+		getAvailableMovesForType(from, piece.getType(), piece.isWhite());
 
 		return moves;
 	}
 
 	private List<Position> getAvailableMovesForType(Position from, PieceType type, boolean isWhite){
-		List<Position> moves = Lists.newArrayList();
+		final List<Position> moves = Lists.newArrayList();
 		Position checkedPosition;
 		switch (type) {
 			case PAWN:
@@ -79,22 +80,17 @@ public class Play {
 				}
 				break;
 			case TOWER:
-				// TODO add rock possibility
-				// TODO finish it!
-				// on the rows
-				checkedPosition = from;
-				boolean blocked = false;
-				do {
-					checkedPosition = move(checkedPosition, 1, 0, isWhite);
-					if (isPositionFree(checkedPosition)) {
-						moves.add(checkedPosition);
-					} else if (isPositionToTake(checkedPosition, isWhite)) {
-						moves.add(checkedPosition);
-						blocked = true;
-					}
-				} while (checkedPosition != null && !blocked);
+				moves.addAll(getMovesInLine(from, 0, 1, isWhite));
+				moves.addAll(getMovesInLine(from, 0, -1, isWhite));
+				moves.addAll(getMovesInLine(from, 1, 0, isWhite));
+				moves.addAll(getMovesInLine(from, -1, 0, isWhite));
+				// TODO add rock possibility for the start position
 				break;
 			case BISHOP:
+				moves.addAll(getMovesInLine(from, 1, 1, isWhite));
+				moves.addAll(getMovesInLine(from, -1, -1, isWhite));
+				moves.addAll(getMovesInLine(from, 1, -1, isWhite));
+				moves.addAll(getMovesInLine(from, -1, 1, isWhite));
 				break;
 			case HORSE:
 				break;
@@ -104,7 +100,16 @@ public class Play {
 				moves.addAll(getAvailableMovesForType(from, PieceType.TOWER, isWhite));
 				break;
 			case KING:
-				// TODO add rock possibility
+				// check possible moves around king
+				for (int i=-1; i<=1; i++) {
+					for (int j=1; j<=1; j++) {
+						checkedPosition = move(from, i, j, isWhite);
+						if (isPositionFree(checkedPosition) || isPositionToTake(checkedPosition, isWhite)) {
+							moves.add(checkedPosition);
+						}
+					}
+				}
+				// TODO add rock possibility for the start position
 				break;
 		}
 		return moves;
@@ -127,5 +132,22 @@ public class Play {
 		return p != null
 				&& board.get(p) != null
 				&& board.get(p).isWhite() != isWhite;
+	}
+
+	private List<Position> getMovesInLine(Position from, int rowShift, int colShift, boolean isWhite) {
+		final List<Position> moves = Lists.newArrayList();
+		Position checkedPosition = from;
+		boolean blocked = false;
+		do {
+			// get next possible move ahead
+			checkedPosition = move(checkedPosition, rowShift, colShift, isWhite);
+			if (isPositionFree(checkedPosition)) {
+				moves.add(checkedPosition);
+			} else if (isPositionToTake(checkedPosition, isWhite)) {
+				moves.add(checkedPosition);
+				blocked = true;
+			}
+		} while (checkedPosition != null && !blocked);
+		return moves;
 	}
 }
